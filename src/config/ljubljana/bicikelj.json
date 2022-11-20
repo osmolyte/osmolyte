@@ -1,0 +1,29 @@
+{
+  "name": "BicikeLJ",
+  "source": "https://api.jcdecaux.com/vls/v3/stations?apiKey=frifk0jbxfefqqniqez09tw4jvk37wyf823b5j1i&contract=ljubljana",
+  "match_distance": 100,
+  "mapping": {
+    "_name": "name",
+    "_lat": "position.latitude",
+    "_lon": "position.longitude",
+    "ref": "number",
+    "capacity": "totalStands.capacity"
+  },
+  "extra": {
+    "amenity": "bicycle_rental",
+    "bicycle_rental": "docking_station",
+    "network": "BicikeLJ",
+    "network:wikidata": "Q4903630",
+    "network:wikipedia": "en:BicikeLJ",
+    "operator": "JCDecaux",
+    "operator:wikidata": "Q74877",
+    "operator:wikipedia": "en:JCDecaux",
+    "website": "https://www.bicikelj.si/",
+    "source_ref": "https://www.bicikelj.si/en/mapping"
+  },
+  "query": {
+    "amenity": "bicycle_rental",
+    "network": "BicikeLJ",
+    "_bbox": [45.9740637,14.408617,46.1459968,14.755332]
+  }
+}

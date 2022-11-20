@@ -1,0 +1,28 @@
+{
+  "name": "Cyclocity",
+  "source": "https://api.jcdecaux.com/vls/v3/stations?apiKey=frifk0jbxfefqqniqez09tw4jvk37wyf823b5j1i&contract=vilnius",
+  "match_distance": 100,
+  "mapping": {
+    "_name": "name",
+    "_lat": "position.latitude",
+    "_lon": "position.longitude",
+    "ref": "number",
+    "capacity": "totalStands.capacity"
+  },
+  "extra": {
+    "amenity": "bicycle_rental",
+    "bicycle_rental": "docking_station",
+    "network": "Cyclocity",
+    "network:wikidata": "Q3008464",
+    "operator": "JCDecaux",
+    "operator:wikidata": "Q74877",
+    "operator:wikipedia": "en:JCDecaux",
+    "website": "https://www.cyclocity.lt/",
+    "source_ref": "https://www.cyclocity.lt/en/mapping"
+  },
+  "query": {
+    "amenity": "bicycle_rental",
+    "network": "Cyclocity",
+    "_bbox": [54.5693374, 25.0245351, 54.83232, 25.4815808]
+  }
+}
