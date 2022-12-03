@@ -59,7 +59,7 @@ const validatorId: string = route.params.validatorId as string
 const city: City = (cities as KeyValue)[cityId] || {}
 const config: Validator = city.validators[validatorId]
 
-const overpassData: OsmObject[] = await loadOverpass(config.query)
+const overpassData: OsmObject[] = await loadOverpass(config.query, city)
 const sourceItems: any[] = await loadSource(config)
 
 const points: SourcePoint[] = sourceItems.map((item: any) => {

@@ -2,7 +2,8 @@ import {Position} from "geojson";
 
 export interface City {
   name: string;
-  coordinates: Position;
+  country: string;
+  bbox: number[];
   zoom?: number;
   validators: {
     [ key: string ]: Validator;

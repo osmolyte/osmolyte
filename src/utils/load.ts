@@ -1,4 +1,4 @@
-import {KeyValue, OsmObject, SourcePoint, Validator} from "../types"
+import {City, KeyValue, OsmObject, SourcePoint, Validator} from "../types"
 import {getByKey} from "./match";
 
 async function loadJson(url: string): Promise<any> {
@@ -61,10 +61,11 @@ async function loadSource(config: Validator): Promise<any[]> {
     return sourceItems
 }
 
-async function loadOverpass(query: KeyValue): Promise<OsmObject[]> {
+async function loadOverpass(query: KeyValue, city: City): Promise<OsmObject[]> {
     const queryString: string = Object.keys(query).map(key => {
         if (key === '_bbox') {
-            return `(${query[key].join(',')})`
+            const bbox: number[] = query[key] === true ? city.bbox : query[key];
+            return `(${bbox.join(',')})`
         }
         if (key.startsWith('_')) {
             return ''

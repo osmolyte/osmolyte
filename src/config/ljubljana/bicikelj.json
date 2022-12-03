@@ -24,6 +24,6 @@
   "query": {
     "amenity": "bicycle_rental",
     "network": "BicikeLJ",
-    "_bbox": [45.9740637,14.408617,46.1459968,14.755332]
+    "_bbox": true,
   }
 }

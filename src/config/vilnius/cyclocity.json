@@ -23,6 +23,6 @@
   "query": {
     "amenity": "bicycle_rental",
     "network": "Cyclocity",
-    "_bbox": [54.5693374, 25.0245351, 54.83232, 25.4815808]
+    "_bbox": true,
   }
 }

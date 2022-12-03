@@ -13,7 +13,7 @@
         </MDBListGroup>
       </MDBCol>
       <MDBCol col="9">
-        <Map :center="[35, 53]" :points="points"/>
+        <Map :center="[35, 53]" :points="points" :onClick="onClick"/>
       </MDBCol>
     </MDBRow>
   </MDBContainer>
@@ -25,15 +25,20 @@ import Navbar from '../components/Navbar.vue'
 import Map from "../components/Map.vue"
 import cities from '../config/cities.json'
 import {SourcePoint} from "../types"
+import {bboxCenter} from "../utils/geo";
+import {Router, useRouter} from "vue-router";
 
 const points: SourcePoint[] = Object.keys(cities).map((cityId: string) => {
   const city = cities[cityId as keyof typeof cities]
   return {
-    coordinates: city.coordinates,
+    coordinates: bboxCenter(city.bbox),
     ref: cityId,
-    name: city.name,
-    url: `/${cityId}`
+    name: city.name
   }
 })
 
+const router: Router = useRouter()
+const onClick = function (point: SourcePoint) {
+  router.replace(`/${point.ref}`)
+}
 </script>

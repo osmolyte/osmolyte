@@ -14,7 +14,7 @@
         </MDBListGroup>
       </MDBCol>
       <MDBCol col="9">
-        <Map :zoom="11" :center="city.coordinates"/>
+        <Map :zoom="11" :center="bboxCenter(city.bbox)"/>
       </MDBCol>
     </MDBRow>
   </MDBContainer>
@@ -28,6 +28,7 @@ import {RouteParams, useRoute} from "vue-router";
 import cities from '../config/cities.json'
 import Map from "../components/Map.vue";
 import {City, Validator} from "../types";
+import {bboxCenter} from "../utils/geo";
 
 const params: RouteParams = useRoute().params
 const cityId: string = params.cityId as string
