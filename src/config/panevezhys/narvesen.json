@@ -1,0 +1,32 @@
+{
+  "name": "Narvesen",
+  "source": "https://cors-anywhere.herokuapp.com/https://lojalumas.narvesen.lt/api/shops",
+  "root": "shops",
+  "match_distance": 50,
+  "filter": {
+    "city": "Panevėžys"
+  },
+  "mapping": {
+    "_name": "address",
+    "_lat": "latLng.lat",
+    "_lon": "latLng.lng",
+    "ref": "id"
+  },
+  "extra": {
+    "shop": "kiosk",
+    "name": "Narvesen",
+    "brand": "Narvesen",
+    "brand:wikidata": "Q6514414",
+    "brand:wikipedia": "en:Narvesen",
+    "operator": "Reitan Convenience Lithuania",
+    "operator:wikidata": "Q13504978",
+    "operator:wikipedia": "de:Reitan Convenience Lithuania",
+    "website": "https://narvesen.lt/"
+  },
+  "query": {
+    "shop": "*",
+    "name": "Narvesen",
+    "_bbox": true,
+    "_types": ["node", "area"]
+  }
+}
