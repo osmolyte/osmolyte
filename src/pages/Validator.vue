@@ -28,7 +28,7 @@
       </MDBCol>
       <MDBCol col="9">
         <MDBRow>
-          <Map :zoom=12 :center="center" :points="points" :onClick="onClick"/>
+          <Map :zoom="getChosenPoint() ? 14 : 12" :center="getChosenPoint().coordinates" :points="points" :onClick="onClick"/>
         </MDBRow>
         <MDBRow v-if="getChosenPoint().ref" col="3">
           <Comparison :point="getChosenPoint()"/>
@@ -45,9 +45,8 @@ import Navbar from '../components/Navbar.vue'
 import cities from '../config/cities.json'
 import {getByKey, getDiff, getMappedValues, matchOsm} from '../utils/match'
 import {RouteLocationNormalizedLoaded, Router, useRoute, useRouter} from "vue-router"
-import {Position} from "geojson";
 import {City, Validator, KeyValue, SourcePoint, OsmObject} from "../types";
-import {loadJson, loadOverpass} from "../utils/load";
+import {loadOverpass, loadSource} from "../utils/load";
 import {ref, Ref, watch} from "vue";
 import Comparison from "../components/Comparison.vue";
 
@@ -56,18 +55,15 @@ const route: RouteLocationNormalizedLoaded = useRoute()
 
 const cityId: string = route.params.cityId as string
 const validatorId: string = route.params.validatorId as string
-const sourceObject: Ref = ref({})
 
 const city: City = (cities as KeyValue)[cityId] || {}
 const config: Validator = city.validators[validatorId]
-const refKey = config.mapping.ref
 
 const overpassData: OsmObject[] = await loadOverpass(config.query)
-const sourceItems: any = await loadJson(config.source)
-sourceItems.sort((a: any, b: any) => getByKey(a, refKey) > getByKey(b, refKey) ? 1 : -1)
+const sourceItems: any[] = await loadSource(config)
 
 const points: SourcePoint[] = sourceItems.map((item: any) => {
-  const osm: OsmObject | undefined = matchOsm(item, overpassData, refKey, config.match_distance)
+  const osm: OsmObject | undefined = matchOsm(item, overpassData, config)
   const mappedData: KeyValue = getMappedValues(item, config)
   const diff = getDiff(mappedData, osm?.tags || {})
 
@@ -85,7 +81,7 @@ const points: SourcePoint[] = sourceItems.map((item: any) => {
       getByKey(item, config.mapping._lon),
       getByKey(item, config.mapping._lat),
     ],
-    ref: getByKey(item, refKey),
+    ref: getByKey(item, config.mapping.ref),
     name: getByKey(item, config.mapping._name),
     status,
     osm,
@@ -94,11 +90,14 @@ const points: SourcePoint[] = sourceItems.map((item: any) => {
   }
 })
 
-const center: Position | undefined = points.length ? undefined : city.coordinates
+const sourceObject: Ref = ref({})
+if (route.params.ref) {
+  sourceObject.value = points.find((point: SourcePoint) => point.ref == route.params.ref)
+}
 
 watch(route, (toRoute: RouteLocationNormalizedLoaded) => {
   if (toRoute.params.ref) {
-    sourceObject.value = points.find(point => point.ref == toRoute.params.ref)
+    sourceObject.value = points.find((point: SourcePoint) => point.ref == toRoute.params.ref)
   } else {
     sourceObject.value = {}
   }

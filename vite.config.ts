@@ -6,11 +6,13 @@ function collectValidators(src) {
   const matches = src.match(/export const [a-z]+ = {/g)
   for (const m in matches) {
     const cityId: string = matches[m].split(' ')[2]
-    const files = readdirSync(`src/config/${cityId}/`)
+    const files: string[] = readdirSync(`src/config/${cityId}/`)
 
-    const validators = [];
+    const validators: string[] = [];
     for (const f in files) {
-      validators.push(files[f].replace('.json', '') + ':' + readFileSync(`src/config/${cityId}/${files[f]}`).toString())
+      const validatorId: string = files[f].replace('.json', '')
+      const validatorData: string = readFileSync(`src/config/${cityId}/${files[f]}`).toString()
+      validators.push(`${validatorId}: ${validatorData}`)
     }
 
     src = src.replace(matches[m], matches[m] + 'validators:{' + validators.join(',') + '},')

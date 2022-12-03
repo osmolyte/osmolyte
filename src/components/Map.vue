@@ -3,7 +3,7 @@
       style="height:50vh"
       :accessToken="myAccessToken"
       :zoom="zoom || 3"
-      :center="realCenter"
+      :center="realCenter(props.center, props.points)"
       mapStyle="light-v10"
   >
     <MapboxMarker v-for="point in points"
@@ -52,5 +52,5 @@ const realCenter = ((center?: number[], points?: any[]): number[] => {
     (minLon + maxLon) / 2,
     (minLat + maxLat) / 2,
   ]
-})(props.center, props.points)
+})
 </script>

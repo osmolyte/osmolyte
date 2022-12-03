@@ -1,17 +1,23 @@
 import {DiffRow, KeyValue, OsmObject, SourcePoint, Validator} from "../types";
 
-const matchOsm = (item: any, osmObjects: OsmObject[], refKey: string, distance?: number): OsmObject | undefined => {
+const matchOsm = (item: any, osmObjects: OsmObject[], config: Validator): OsmObject | undefined => {
     let matchedOsmObject: OsmObject | undefined
     osmObjects.forEach((osmObject: OsmObject) => {
-        if (osmObject.tags.ref && item[refKey]) {
-            if (osmObject.tags.ref == item[refKey]) {
+        if (osmObject.tags.ref && item[config.mapping.ref]) {
+            if (osmObject.tags.ref == item[config.mapping.ref]) {
                 matchedOsmObject = osmObject
             }
             return
         }
-        const x: number = osmObject.lon - item.position.longitude
-        const y: number = osmObject.lat - item.position.latitude
-        if (x ** 2 + y ** 2 < (distance || 10 / 111139) ** 2) {
+        const osmLon: number = osmObject.bounds
+            ? (osmObject.bounds?.minlon + osmObject.bounds?.maxlon) / 2
+            : osmObject.lon as number
+        const osmLat: number = osmObject.bounds
+            ? (osmObject.bounds?.minlat + osmObject.bounds?.maxlat) / 2
+            : osmObject.lat as number
+        const x: number = osmLon - getByKey(item, config.mapping._lon)
+        const y: number = osmLat - getByKey(item, config.mapping._lat)
+        if (x ** 2 + y ** 2 < ((config.match_distance || 10) / 111139) ** 2) {
             matchedOsmObject = osmObject
             return
         }

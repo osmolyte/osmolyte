@@ -12,6 +12,8 @@ export interface City {
 export interface Validator {
   name: string;
   source: string;
+  root?: string;
+  filter?: KeyValue;
   mapping: KeyValue;
   extra?: KeyValue;
   query: KeyValue;
@@ -25,8 +27,14 @@ export interface KeyValue {
 export interface OsmObject {
   type: string;
   id: number;
-  lat: number;
-  lon: number;
+  lat?: number;
+  lon?: number;
+  bounds?: {
+    minlat: number;
+    minlon: number;
+    maxlon: number;
+    maxlat: number;
+  }
   timestamp: string;
   version: number;
   changeset: number;

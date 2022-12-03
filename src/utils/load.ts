@@ -1,4 +1,5 @@
-import {KeyValue, OsmObject, SourcePoint} from "../types"
+import {KeyValue, OsmObject, SourcePoint, Validator} from "../types"
+import {getByKey} from "./match";
 
 async function loadJson(url: string): Promise<any> {
     const cache: any[] = JSON.parse(localStorage.getItem('v1000') || '[]')
@@ -32,14 +33,49 @@ async function loadJson(url: string): Promise<any> {
     return response
 }
 
+async function loadSource(config: Validator): Promise<any[]> {
+    let sourceItems: any = await loadJson(config.source)
+
+    if (config.root !== undefined) {
+        sourceItems = getByKey(sourceItems, config.root)
+    }
+
+    if (sourceItems instanceof Object) {
+        sourceItems = Object.values(sourceItems)
+    }
+
+    if (config.filter !== undefined) {
+        sourceItems = sourceItems.filter((item: any) => {
+            for (const key in config.filter) {
+                if (item[key] !== config.filter[key]) {
+                    return false
+                }
+            }
+            return true
+        })
+    }
+
+    const refKey = config.mapping.ref
+    sourceItems.sort((a: any, b: any) => getByKey(a, refKey) > getByKey(b, refKey) ? 1 : -1)
+
+    return sourceItems
+}
+
 async function loadOverpass(query: KeyValue): Promise<OsmObject[]> {
     const queryString: string = Object.keys(query).map(key => {
         if (key === '_bbox') {
             return `(${query[key].join(',')})`
         }
-        return `[${key}=${query[key]}]`
+        if (key.startsWith('_')) {
+            return ''
+        }
+        if (query[key] === '*') {
+            return `[${key}]`
+        }
+        return `[${key}="${query[key]}"]`
     }).join('')
-    const request: string = `[out:json]; node${queryString}; out meta;`
+    const types: string[] = query._types || ['node']
+    const request: string = '[out:json];' + types.map((type: string) => `${type}${queryString};out geom;`).join('')
     return (await loadJson(`https://overpass-api.de/api/interpreter?data=${request}`)).elements
 }
 
@@ -71,7 +107,7 @@ const openJosm = async (point: SourcePoint) => {
 }
 
 export {
-    loadJson,
     loadOverpass,
+    loadSource,
     openJosm,
 }
